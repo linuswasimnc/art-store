@@ -1,4 +1,4 @@
-import { supabase } from "@/src/lib/supabase"
+import { supabase } from "@/src/lib/supabase";
 
 type Painting = {
   id: number;
@@ -10,24 +10,43 @@ type Painting = {
 };
 
 export default async function Home() {
-  const { data, error } = await supabase.from("paintings").select("*");
-
-console.log("SUPABASE DATA:", data);
-console.log("SUPABASE ERROR:", error);
+  // ✅ Fetch data from Supabase
+  const { data: paintings, error } = await supabase
+    .from("paintings")
+    .select("*")
+    .eq("available", true);
 
   if (error) {
-    return <p>Error loading paintings...</p>;
+    console.error(error);
   }
 
   return (
-   <main style={{ color: "white", padding: "40px" }}>
+    <main style={{ padding: "40px", color: "white", background: "black" }}>
       <h1>Wasim Art Store</h1>
 
-      <h2>Debug Data:</h2>
-      <pre>{JSON.stringify(data, null, 2)}</pre>
+      <div style={{ display: "grid", gap: "20px" }}>
+        {paintings?.map((painting: Painting) => (
+          <div
+            key={painting.id}
+            style={{
+              background: "#111",
+              padding: "20px",
+              borderRadius: "12px",
+              border: "1px solid #222",
+            }}
+          >
+            <img
+              src={painting.image_url}
+              alt={painting.title}
+              style={{ width: "100%", borderRadius: "8px" }}
+            />
 
-      <h2>Error:</h2>
-      <pre>{JSON.stringify(error, null, 2)}</pre>
+            <h2>{painting.title}</h2>
+            <p>{painting.description}</p>
+            <p>₹ {painting.price}</p>
+          </div>
+        ))}
+      </div>
     </main>
   );
 }
