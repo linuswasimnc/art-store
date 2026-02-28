@@ -1,4 +1,5 @@
 import { supabase } from "@/src/lib/supabase";
+export const dynamic = "force-dynamic";
 
 type Painting = {
   id: number;
